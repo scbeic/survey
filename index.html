@@ -1,108 +1,41 @@
 <!DOCTYPE html>
-<html lang="th">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>LIFF Flex Demo</title>
-  <style>
-    body { font-family: sans-serif; background: #f0f0f0; margin: 0; padding: 32px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-    .card { background: #fff; border-radius: 12px; max-width: 420px; width: 100%; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,.1); text-align: center; }
-    .status { margin-top: 20px; padding: 12px; border-radius: 6px; font-weight: bold; }
-    .loading { background: #e3f2fd; color: #1976d2; }
-    .success { background: #e8f5e8; color: #2e7d32; }
-    .error { background: #ffebee; color: #c62828; }
-    .spinner { border: 3px solid #eee; border-top: 3px solid #00B900; border-radius: 50%; width: 28px; height: 28px; animation: spin 1s linear infinite; margin: 0 auto 12px; }
-    @keyframes spin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
-  </style>
+  <meta charset="UTF-8">
+  <title>Auto Send Message via GAS</title>
+  <script src="https://static.line-scdn.net/liff/edge/versions/2.22.3/liff.js"></script>
 </head>
 <body>
-  <div class="card">
-    <h2>LINE LIFF Flex Message</h2>
-    <div id="status" class="status loading">
-      <div class="spinner"></div>
-      กำลังโหลด LIFF SDK...
-    </div>
-  </div>
-
-  <!-- ✅ โหลด SDK แบบปลอดภัย -->
+  <h2>กำลังเชื่อมต่อ LINE...</h2>
   <script>
-    const script = document.createElement('script');
-    script.src = 'https://static.line-scdn.net/liff/edge/versions/2.22.3/liff.js';
-    script.onload = () => {
-      runLIFF(); // เรียกใช้เมื่อ liff.js โหลดเสร็จ
-    };
-    script.onerror = () => {
-      document.getElementById("status").className = "status error";
-      document.getElementById("status").innerText = "❌ ไม่สามารถโหลด LIFF SDK ได้ กรุณาเปิดผ่านแอป LINE";
-    };
-    document.head.appendChild(script);
-  </script>
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwQMkgORBAWF1g5k2_trRLDCP0XmexpXIMGyg1NdyawbUE98IQSAv-Hpx4rL3raDfV5LA/exec';
 
-  <script>
-    function runLIFF() {
-      const status = document.getElementById("status");
+    async function main() {
+      try {
+        await liff.init({ liffId: '1657155025-mN3yQKNW' });
 
-      const createFlex = (name) => ({
-        type: 'flex',
-        altText: 'ทักทายจาก LIFF',
-        contents: {
-          type: 'bubble',
-          header: {
-            type: 'box',
-            layout: 'vertical',
-            contents: [{ type: 'text', text: `👋 สวัสดี ${name}`, weight: 'bold', size: 'xl', color: '#ffffff' }],
-            backgroundColor: '#00B900',
-            paddingAll: '20px'
-          },
-          body: {
-            type: 'box',
-            layout: 'vertical',
-            contents: [{ type: 'text', text: 'นี่คือ Flex Message ที่ส่งจาก LIFF', wrap: true }]
-          },
-          footer: {
-            type: 'box',
-            layout: 'vertical',
-            contents: [
-              {
-                type: 'button',
-                style: 'primary',
-                color: '#00B900',
-                action: {
-                  type: 'uri',
-                  label: 'เยี่ยมชมเว็บไซต์',
-                  uri: 'https://line.me'
-                }
-              }
-            ]
-          }
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
         }
-      });
 
-      liff.init({ liffId: 'YOUR_LIFF_ID' }) // ← เปลี่ยนตรงนี้
-        .then(() => {
-          if (!liff.isInClient()) {
-            status.className = 'status error';
-            status.innerText = '❌ กรุณาเปิดลิงก์นี้จากในแอป LINE เท่านั้น';
-            return;
-          }
-          return liff.getProfile();
-        })
-        .then(profile => {
-          const flex = createFlex(profile.displayName);
-          status.innerHTML = '<div class="spinner"></div>กำลังส่ง Flex...';
-          return liff.sendMessages([flex]);
-        })
-        .then(() => {
-          status.className = 'status success';
-          status.innerText = '✅ ส่ง Flex สำเร็จ! ปิดหน้าต่างใน 2 วินาที';
-          setTimeout(() => liff.closeWindow(), 2000);
-        })
-        .catch(err => {
-          console.error('LIFF error:', err);
-          status.className = 'status error';
-          status.innerText = '❌ เกิดข้อผิดพลาด: ' + err.message;
-        });
+        const decoded = liff.getDecodedIDToken(); // ⚠️ ต้องเปิด scope: openid
+        const userId = decoded.sub;
+
+        // ส่ง userId ไปยัง Google Script
+        fetch(`${GAS_URL}?userId=${encodeURIComponent(userId)}`)
+          .then(() => {
+            document.body.innerHTML = '<h3>✅ ส่งข้อความหา LINE คุณแล้ว!</h3>';
+            setTimeout(() => liff.closeWindow(), 2000);
+          });
+
+      } catch (err) {
+        document.body.innerHTML = `<h3>❌ เกิดข้อผิดพลาด: ${err.message}</h3>`;
+        console.error(err);
+      }
     }
+
+    main();
   </script>
 </body>
 </html>
