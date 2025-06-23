@@ -2,40 +2,39 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Auto Send Message via GAS</title>
+  <title>LIFF Send to GAS</title>
   <script src="https://static.line-scdn.net/liff/edge/versions/2.22.3/liff.js"></script>
 </head>
 <body>
-  <h2>กำลังเชื่อมต่อ LINE...</h2>
+  <h2>กำลังโหลด...</h2>
   <script>
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwQMkgORBAWF1g5k2_trRLDCP0XmexpXIMGyg1NdyawbUE98IQSAv-Hpx4rL3raDfV5LA/exec';
+    const liffId = '1657155025-mN3yQKNW';
+    const gasUrl = 'https://script.google.com/macros/s/AKfycbwQMkgORBAWF1g5k2_trRLDCP0XmexpXIMGyg1NdyawbUE98IQSAv-Hpx4rL3raDfV5LA/exec';
 
-    async function main() {
+    async function start() {
       try {
-        await liff.init({ liffId: '1657155025-mN3yQKNW' });
+        await liff.init({ liffId });
 
         if (!liff.isLoggedIn()) {
           liff.login();
           return;
         }
 
-        const decoded = liff.getDecodedIDToken(); // ⚠️ ต้องเปิด scope: openid
-        const userId = decoded.sub;
+        const idToken = liff.getDecodedIDToken();
+        const userId = idToken.sub;
 
-        // ส่ง userId ไปยัง Google Script
-        fetch(`${GAS_URL}?userId=${encodeURIComponent(userId)}`)
-          .then(() => {
-            document.body.innerHTML = '<h3>✅ ส่งข้อความหา LINE คุณแล้ว!</h3>';
-            setTimeout(() => liff.closeWindow(), 2000);
-          });
+        // ส่ง userId ไป GAS
+        await fetch(`${gasUrl}?userId=${encodeURIComponent(userId)}`);
 
-      } catch (err) {
-        document.body.innerHTML = `<h3>❌ เกิดข้อผิดพลาด: ${err.message}</h3>`;
-        console.error(err);
+        document.body.innerHTML = "<h3>✅ ส่งข้อความหา LINE ของคุณเรียบร้อยแล้ว!</h3>";
+        setTimeout(() => liff.closeWindow(), 2000);
+      } catch (e) {
+        console.error(e);
+        document.body.innerHTML = `<p style="color:red">❌ เกิดข้อผิดพลาด: ${e.message}</p>`;
       }
     }
 
-    main();
+    start();
   </script>
 </body>
 </html>
