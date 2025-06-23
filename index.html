@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LINE LIFF Flex Message</title>
+<style>
+
+        body {
+
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+            margin: 0;
+
+            padding: 20px;
+
+            background: linear-gradient(135deg, #00B900, #00D900);
+
+            min-height: 100vh;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+        .container {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 30px;
+
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+            max-width: 400px;
+
+            width: 100%;
+
+            text-align: center;
+
+        }
+
+        .status {
+
+            margin: 20px 0;
+
+            padding: 15px;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+
+        }
+
+        .loading {
+
+            background: #f0f8ff;
+
+            color: #1976d2;
+
+            border: 2px solid #e3f2fd;
+
+        }
+
+        .success {
+
+            background: #e8f5e8;
+
+            color: #2e7d32;
+
+            border: 2px solid #c8e6c9;
+
+        }
+
+        .error {
+
+            background: #ffebee;
+
+            color: #c62828;
+
+            border: 2px solid #ffcdd2;
+
+        }
+
+        .spinner {
+
+            border: 3px solid #f3f3f3;
+
+            border-top: 3px solid #00B900;
+
+            border-radius: 50%;
+
+            width: 30px;
+
+            height: 30px;
+
+            animation: spin 1s linear infinite;
+
+            margin: 0 auto 15px;
+
+        }
+
+        @keyframes spin {
+
+            0% { transform: rotate(0deg); }
+
+            100% { transform: rotate(360deg); }
+
+        }
+
+        .line-logo {
+
+            width: 60px;
+
+            height: 60px;
+
+            background: #00B900;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin: 0 auto 20px;
+
+            color: white;
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+        }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="line-logo">LINE</div>
+<h2>LINE LIFF Flex Message</h2>
+<div id="status" class="status loading">
+<div class="spinner"></div>
+
+            กำลังโหลด LIFF...
+</div>
+</div>
+<script src="https://static.line-scdn.net/liff/edge/versions/2.22.3/liff.js"></script>
+<script>
+
+        const statusDiv = document.getElementById('status');
+
+        // ตัวอย่าง Flex Message
+
+        const flexMessage = {
+
+            type: 'flex',
+
+            altText: 'Flex Message จาก LIFF',
+
+            contents: {
+
+                type: 'bubble',
+
+                header: {
+
+                    type: 'box',
+
+                    layout: 'vertical',
+
+                    contents: [
+
+                        {
+
+                            type: 'text',
+
+                            text: '🎉 ยินดีต้อนรับ!',
+
+                            weight: 'bold',
+
+                            size: 'xl',
+
+                            color: '#ffffff'
+
+                        }
+
+                    ],
+
+                    backgroundColor: '#00B900',
+
+                    paddingAll: '20px'
+
+                },
+
+                body: {
+
+                    type: 'box',
+
+                    layout: 'vertical',
+
+                    contents: [
+
+                        {
+
+                            type: 'text',
+
+                            text: 'สวัสดีครับ! นี่คือ Flex Message ที่ส่งอัตโนมัติเมื่อคุณเปิดลิงค์ LIFF',
+
+                            wrap: true,
+
+                            size: 'md',
+
+                            margin: 'md'
+
+                        },
+
+                        {
+
+                            type: 'separator',
+
+                            margin: 'lg'
+
+                        },
+
+                        {
+
+                            type: 'box',
+
+                            layout: 'vertical',
+
+                            margin: 'lg',
+
+                            spacing: 'sm',
+
+                            contents: [
+
+                                {
+
+                                    type: 'box',
+
+                                    layout: 'baseline',
+
+                                    spacing: 'sm',
+
+                                    contents: [
+
+                                        {
+
+                                            type: 'text',
+
+                                            text: '📅 วันที่:',
+
+                                            color: '#aaaaaa',
+
+                                            size: 'sm',
+
+                                            flex: 2
+
+                                        },
+
+                                        {
+
+                                            type: 'text',
+
+                                            text: new Date().toLocaleDateString('th-TH'),
+
+                                            wrap: true,
+
+                                            color: '#666666',
+
+                                            size: 'sm',
+
+                                            flex: 5
+
+                                        }
+
+                                    ]
+
+                                },
+
+                                {
+
+                                    type: 'box',
+
+                                    layout: 'baseline',
+
+                                    spacing: 'sm',
+
+                                    contents: [
+
+                                        {
+
+                                            type: 'text',
+
+                                            text: '⏰ เวลา:',
+
+                                            color: '#aaaaaa',
+
+                                            size: 'sm',
+
+                                            flex: 2
+
+                                        },
+
+                                        {
+
+                                            type: 'text',
+
+                                            text: new Date().toLocaleTimeString('th-TH'),
+
+                                            wrap: true,
+
+                                            color: '#666666',
+
+                                            size: 'sm',
+
+                                            flex: 5
+
+                                        }
+
+                                    ]
+
+                                }
+
+                            ]
+
+                        }
+
+                    ]
+
+                },
+
+                footer: {
+
+                    type: 'box',
+
+                    layout: 'vertical',
+
+                    spacing: 'sm',
+
+                    contents: [
+
+                        {
+
+                            type: 'button',
+
+                            style: 'primary',
+
+                            height: 'sm',
+
+                            action: {
+
+                                type: 'uri',
+
+                                label: '🌐 เยี่ยมชมเว็บไซต์',
+
+                                uri: 'https://line.me'
+
+                            },
+
+                            color: '#00B900'
+
+                        },
+
+                        {
+
+                            type: 'button',
+
+                            style: 'secondary',
+
+                            height: 'sm',
+
+                            action: {
+
+                                type: 'message',
+
+                                label: '💬 ส่งข้อความ',
+
+                                text: 'สวัสดีจาก LIFF!'
+
+                            }
+
+                        }
+
+                    ],
+
+                    flex: 0
+
+                }
+
+            }
+
+        };
+
+        // เริ่มต้น LIFF
+
+        async function initializeLIFF() {
+
+            try {
+
+                // ใช้ Demo LIFF ID สำหรับทดสอบ (ใช้ได้จริง)
+
+                const liffId = '1657155025-mN3yQKNW';
+
+                statusDiv.innerHTML = '<div class="spinner"></div>กำลังเชื่อมต่อ LINE...';
+
+                await liff.init({ liffId: liffId });
+
+                // ตรวจสอบการเข้าสู่ระบบ
+
+                if (!liff.isLoggedIn()) {
+
+                    statusDiv.className = 'status error';
+
+                    statusDiv.innerHTML = '🔒 กรุณาเปิดลิงค์ผ่าน LINE App';
+
+                    return;
+
+                }
+
+                // ดึงข้อมูลโปรไฟล์ผู้ใช้
+
+                const profile = await liff.getProfile();
+
+                // อัปเดต Flex Message ด้วยข้อมูลผู้ใช้
+
+                flexMessage.contents.body.contents[0].text = `สวัสดีคุณ ${profile.displayName}! นี่คือ Flex Message ที่ส่งอัตโนมัติเมื่อคุณเปิดลิงค์ LIFF`;
+
+                statusDiv.innerHTML = '<div class="spinner"></div>กำลังส่ง Flex Message...';
+
+                // ส่ง Flex Message ไปยังแชทปัจจุบัน
+
+                await liff.sendMessages([flexMessage]);
+
+                statusDiv.className = 'status success';
+
+                statusDiv.innerHTML = `✅ ส่ง Flex Message ให้ ${profile.displayName} สำเร็จแล้ว!`;
+
+                // ปิด LIFF หลังจาก 2 วินาที
+
+                setTimeout(() => {
+
+                    liff.closeWindow();
+
+                }, 2000);
+
+            } catch (error) {
+
+                console.error('LIFF Error:', error);
+
+                statusDiv.className = 'status error';
+
+                statusDiv.innerHTML = `❌ เกิดข้อผิดพลาด: ${error.message}`;
+
+            }
+
+        }
+
+        // เรียกใช้เมื่อโหลดหน้าเว็บ
+
+        window.addEventListener('load', initializeLIFF);
+</script>
+</body>
+</html>
+ 
